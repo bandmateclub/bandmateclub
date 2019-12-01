@@ -1,40 +1,33 @@
 language: node_js
 branches:
   only:
-    - master
+  - master
 node_js:
-  - 12.13.1
+- 12.13.1
 env:
-  - NODE_ENV=PRODUCTION
+- NODE_ENV=PRODUCTION
 before_install:
-  - curl -o- -L https://yarnpkg.com/install.sh | bash -s -- --version 1.19.2
-  - export PATH="$HOME/.yarn/bin:$PATH"
+- curl -o- -L https://yarnpkg.com/install.sh | bash -s -- --version 1.19.2
+- export PATH="$HOME/.yarn/bin:$PATH"
 before_script:
-  - cd frontend-payment
-  - rm -rf node_modules
-  - yarn --frozen-lockfile
-  - yarn build
-  - cd ..
-  - rm -rf backend-core/frontend-dist/
-  - cp -R frontend-payment/build/ backend-core/frontend-dist/
-  - cd backend-core
-  - rm -rf node_modules
-  - yarn --frozen-lockfile
-  - yarn build
-  - cd ..
+- cd backend-core
+- rm -rf node_modules
+- yarn --frozen-lockfile
+- yarn build
+- cd ..
 script:
-  - echo "There are no tests"
+- echo "There are no tests"
 cache:
   directories:
-    - "$HOME/.cache/yarn"
-    - "$HOME/.npm"
+  - "$HOME/.cache/yarn"
+  - "$HOME/.npm"
 before_deploy:
-  - cd backend-core
+- cd backend-core
 deploy:
   skip_cleanup: true
   provider: heroku
   api_key:
-    secure: todo
+    secure: CBdvsuoIutDj+7ZR8Co6BgQRSJymfLZfKOtzCot00w/au45h0wrH18RnseUy9eTy5fQ/RywO3z/VyhEmbluqP4UzhFa7tPn1ciAa6sYXEcsn4WYf431DS8RRW8I6WEavvKngcuhIcMTlCQlM2R96bpZGaxIVOBpExrRjaa8wN9V5Kb71JKwEOjiAeg8JUwvXmAhziOu/vvsdLbfz368inl676lh41otwsHSEV8r0TVauHubTz88Dias50sQ4CAJD9T5h0BqPheHQO0MKETwa0JAF3Pd96CIVdTJXADPtc6UNZmN5gzTNGc0rf9/7Dgc6tLNKGm85qtBPgGzd4NDWo3rXgx25IF5GO+byMwCh1UZZ8kSIV9Fw7qVtNhz9P9Xlv2vK58aR+ofIa0MQDaQDTyYnTLedo+KEq/GqqRI9gaN+9EvrSe/aY/Wr3dQjuKdpEXrKoIfvP4LDHabz1On5tu1Gq3O5X/qxbfMPaGiknsbGxpJnoAvF+2IvITq8GuMWRrUqAEswYyH/se0F7cykKP8kFAa+Naq7vv8Q07bMHE+64LloVk57OIDtm6q0dlXtQCYXLcseDEvmv1Vo0Iiz6tK7untDQov8aIL6SKrBRFgYQJp+ijQ4lD4KhYW386abnH4K2+cD/VgFua+T4N6Zo6RdptLYnKWD+pCablp37rc=
   app: bandmateclub
   on:
     repo: bandmateclub/bandmateclub
