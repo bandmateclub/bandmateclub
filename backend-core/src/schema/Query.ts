@@ -1,10 +1,12 @@
 import { gql } from "apollo-server-core";
-import { AuthorizationError, AuthenticationRequired } from "../models/Errors";
-import { PaginationSettings } from "../models/PaginationSettings";
+import { QueryResolvers } from "../generated/graphql";
 
 export const typeDef = gql`
   type Query {
+    test: String
   }
 `;
 
-export const resolvers = {};
+export const resolvers: QueryResolvers = {
+  test: () => "hello world"
+};

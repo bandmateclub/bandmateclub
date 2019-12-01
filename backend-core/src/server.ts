@@ -4,7 +4,6 @@ import chalk from "chalk";
 import cors from "cors";
 import express, { Express } from "express";
 import "express-async-errors";
-import * as fs from "fs";
 import { Container } from "inversify";
 import OAuthServer, { Request, Response } from "oauth2-server";
 import * as path from "path";
@@ -16,12 +15,8 @@ import { UserService } from "./services/user/UserService";
 import schema from "./schema";
 import { TYPES } from "./types";
 import { createAdminUser, createGraphQLContext } from "./utilities/server";
-import { isNonProduction } from "./utilities/helpers";
-import axios from "axios";
 import { KnexProvider } from "./services/KnexProvider";
-
-const STATIC_DIR = path.resolve(__dirname, "./static");
-const MOCK_HTML = fs.readFileSync(`${STATIC_DIR}/mock.html`).toString("utf-8");
+import knextype from "knex";
 
 const log = console.log; // tslint:disable-line
 
@@ -37,8 +32,13 @@ container.load(production);
 export const createServer = async (callback?: (error?: any, app?: Express) => any) => {
   try {
     const knexProvider = container.get<KnexProvider>(TYPES.KnexProvider);
+    const knex = await knexProvider.connect();
+    log(chalk.green("\n  Database connected"));
 
-    await knexProvider.connect();
+    await knex.migrate.latest({
+      directory: path.resolve(__dirname, "./migrations")
+    });
+    container.bind<knextype<any, any>>(TYPES.Knex).toConstantValue(knex);
 
     const userService = container.get<UserService>(TYPES.UserService);
     const model = container.get<Authentication>(TYPES.Authentication);
@@ -76,7 +76,7 @@ export const createServer = async (callback?: (error?: any, app?: Express) => an
     /**
      * Express middlewares
      */
-    app.use(cors());
+    app.use(cors() as any);
 
     app.use(bodyParser.json());
     app.use(bodyParser.urlencoded({ extended: false }));
@@ -96,18 +96,6 @@ export const createServer = async (callback?: (error?: any, app?: Express) => an
      */
 
     app.use("/static", express.static(path.resolve(__dirname, "static")));
-
-    if (isNonProduction()) {
-      app.get("/mock", (req, res) => {
-        res.header("Content-Type", "text/html").send(MOCK_HTML.replace("{{DONATION_ID}}", "None"));
-      });
-
-      app.post("/mock", (req, res) => {
-        res
-          .header("Content-Type", "text/html")
-          .send(MOCK_HTML.replace("{{DONATION_ID}}", req.body.ORDER_REF.split(".")[0]));
-      });
-    }
 
     /**
      * Rest of the routes are managed by frontend

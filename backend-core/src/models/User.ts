@@ -1,4 +1,5 @@
 export interface UserCreator {
+  name: string;
   email: string;
   password: string;
 }
@@ -12,6 +13,7 @@ export interface UserModel {
 
 export interface UserEntity {
   id: string;
+  name: string;
   email: string;
   createdAt: Date;
   role: string;

@@ -7,8 +7,6 @@ const databaseUrl = config.get("db.url");
 
 @injectable()
 export class KnexProvider {
-  private client?: knex = null;
-
   async connect(): Promise<knex<any, any>> {
     const client = knex({
       client: "pg",

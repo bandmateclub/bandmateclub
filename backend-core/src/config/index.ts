@@ -54,6 +54,12 @@ const config = convict({
     env: "CLIENTS"
   },
   defaultUser: {
+    name: {
+      doc: "Admin user name",
+      format: String,
+      default: "Bandmate Admin",
+      env: "DEFAULT_USER_NAME"
+    },
     email: {
       doc: "User email to create if no user exists",
       format: String,
@@ -106,7 +112,7 @@ const config = convict({
 });
 
 if (["development", "test", "staging"].includes(config.get("environment"))) {
-  config.set("db.url", "postgresql://bandmate_user:bandmate_password@localhost:27017/bandmate");
+  config.set("db.url", "postgresql://bandmate_user:bandmate_password@localhost:5430/bandmate");
   config.set("jwt.secret", "secret");
   config.set("defaultUser.password", "123456");
   config.set(

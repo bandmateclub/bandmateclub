@@ -3,7 +3,7 @@ schema: "./src/schema/index.ts"
 documents: null
 config:
   immutableTypes: true
-  contextType: "../schema/context#IContext"
+  contextType: "../schema/context#Context"
   scalars:
     Date: Date
     JSON: any
@@ -18,8 +18,6 @@ generates:
       - typescript-resolvers:
           avoidOptionals: false
           useIndexSignature: true
-          mappers:
-            ChargableSubscription: ./../models/Subscription#RunningSubscription
   ./graphql.schema.json:
     plugins:
       - "introspection"
