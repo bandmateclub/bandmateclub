@@ -1,0 +1,13 @@
+version: "3.7"
+services:
+  postgres:
+    image: postgres
+    restart: always
+    volumes:
+      - ./docker-data/postgres:/var/lib/postgresql
+    ports:
+      - 5430:5432
+    environment:
+      POSTGRES_USER: bandmate_user
+      POSTGRES_DB: bandmate
+      POSTGRES_PASSWORD: bandmate_password
